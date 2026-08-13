@@ -1,0 +1,19 @@
+{
+  "n_train": 52490,
+  "n_test": 17497,
+  "base_readmit_rate": 0.0741,
+  "roc_auc": 0.6766,
+  "avg_precision": 0.1511,
+  "operating_threshold": 0.4786,
+  "precision_at_threshold": 0.1226,
+  "recall_at_threshold": 0.6068,
+  "f1_at_threshold": 0.2039,
+  "top_decile_readmit_rate": 0.1767,
+  "top_decile_lift_vs_random": 2.38,
+  "confusion_matrix": {
+    "tn": 10566,
+    "fp": 5634,
+    "fn": 510,
+    "tp": 787
+  }
+}

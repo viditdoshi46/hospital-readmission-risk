@@ -1,0 +1,18 @@
+# data (regenerate with make_synthetic.py / download_data.py)
+data/raw/*.csv
+data/processed/*
+!data/processed/.gitkeep
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# models (regenerate with model.py) - keep small ones if you prefer
+models/*.joblib
+
+# os
+.DS_Store
+INTERVIEW_STUDY_GUIDE.md

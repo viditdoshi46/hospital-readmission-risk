@@ -1,0 +1,23 @@
+dimension,segment,readmit_rate,n
+discharge_group,AMA / Other,0.0691,3574
+discharge_group,Home,0.057,43969
+discharge_group,Home + Home Health,0.0812,8559
+discharge_group,SNF / Rehab / LTC,0.1245,12201
+discharge_group,Transferred,0.1306,1684
+service_use_tier,Low (0),0.0559,46307
+service_use_tier,Medium (1-2),0.0971,17128
+service_use_tier,High (3+),0.1427,6552
+age,[0-10),0.0197,152
+age,[10-20),0.0397,529
+age,[20-30),0.06,1116
+age,[30-40),0.0581,2669
+age,[40-50),0.0546,6758
+age,[50-60),0.0563,12298
+age,[60-70),0.074,15658
+age,[70-80),0.0878,17732
+age,[80-90),0.0909,11232
+age,[90-100),0.0787,1843
+a1c_high,0,0.0753,61228
+a1c_high,1,0.0659,8759
+med_changed,0,0.0706,38445
+med_changed,1,0.0784,31542
