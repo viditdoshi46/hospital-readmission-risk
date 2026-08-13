@@ -71,11 +71,34 @@ def load_model():
     return None
 
 
+@st.cache_resource(show_spinner="First load: building the dataset & model (~1 min)…")
+def ensure_pipeline():
+    """On a fresh deploy the processed data/model aren't in the repo (gitignored).
+    Build them once: try the real UCI data, fall back to the synthetic generator
+    if the download is blocked. Training here also matches the runtime's
+    scikit-learn version, avoiding pickle-version mismatches."""
+    import subprocess, sys
+    src = ROOT / "src"
+    have_data = (PROC / "enriched.parquet").exists() or (PROC / "enriched.csv").exists()
+    have_model = (MODELS / "readmit_logreg.joblib").exists()
+    if have_data and have_model:
+        return True
+    try:
+        subprocess.run([sys.executable, str(src / "download_data.py")],
+                       check=True, timeout=300)
+    except Exception:
+        subprocess.run([sys.executable, str(src / "make_synthetic.py")], check=True)
+    for step in ("clean.py", "features.py", "model.py"):
+        subprocess.run([sys.executable, str(src / step)], check=True)
+    return True
+
+
 try:
+    ensure_pipeline()
     df, metrics, coefs = load_data()
 except Exception as exc:
-    st.error(f"Data not found. Run the pipeline first "
-             f"(make_synthetic → clean → features → model).\n\n{exc}")
+    st.error("Could not build the dataset/model automatically. Run the pipeline "
+             f"locally (`python run_all.py`).\n\n{exc}")
     st.stop()
 
 st.markdown("""

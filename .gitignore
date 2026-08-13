@@ -1,7 +1,10 @@
-# data (regenerate with make_synthetic.py / download_data.py)
+# Data — commit the real dataset + the processed modeling table so the
+# app and the Streamlit deploy work out of the box. Ignore bulky intermediates.
 data/raw/*.csv
+!data/raw/diabetic_data.csv
 data/processed/*
 !data/processed/.gitkeep
+!data/processed/enriched.csv
 
 # python
 __pycache__/
@@ -10,9 +13,12 @@ __pycache__/
 venv/
 .ipynb_checkpoints/
 
-# models (regenerate with model.py) - keep small ones if you prefer
+# Models — commit the trained model so the deployed app can score patients.
 models/*.joblib
+!models/readmit_logreg.joblib
+
+# Personal prep doc — never publish
+INTERVIEW_STUDY_GUIDE.md
 
 # os
 .DS_Store
-INTERVIEW_STUDY_GUIDE.md
