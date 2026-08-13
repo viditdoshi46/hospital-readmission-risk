@@ -37,13 +37,10 @@ st.markdown("""
   .hero p  {color:#d7ecf5; margin:6px 0 0 0; font-size:1.02rem;}
   .hero .by {color:#9fd0e3; font-size:0.9rem; margin-top:10px;}
   /* KPI cards */
-  div[data-testid="stMetric"] {
-      background:#f5f9fc; border:1px solid #e1ebf2; border-radius:12px;
-      padding:14px 16px;
-  }
-  div[data-testid="stMetricValue"] {color:#0b3d5c !important; font-weight:700;}
-  div[data-testid="stMetricLabel"], div[data-testid="stMetricLabel"] p {
-      color:#334155 !important; font-weight:600;}
+  /* subtle card only — no background/text overrides, so labels + values
+     stay readable in BOTH light and dark themes */
+  div[data-testid="stMetric"] {border:1px solid rgba(28,107,140,.30);
+      border-radius:12px; padding:14px 16px;}
   .stTabs [data-baseweb="tab-list"] {gap: 6px;}
   .stTabs [data-baseweb="tab"] {font-weight:600;}
 </style>
