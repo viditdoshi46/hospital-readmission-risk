@@ -71,6 +71,59 @@ def load_model():
     return None
 
 
+# Plain-English labels for model feature names (used in the Risk Drivers chart)
+FEATURE_LABELS = {
+    "age_mid": "Age",
+    "time_in_hospital": "Length of stay",
+    "num_lab_procedures": "# lab procedures",
+    "num_procedures": "# procedures",
+    "num_medications": "# medications",
+    "number_diagnoses": "# diagnoses",
+    "number_inpatient": "Prior inpatient visits",
+    "number_emergency": "Prior ER visits",
+    "number_outpatient": "Prior outpatient visits",
+    "prior_visits": "Total prior visits",
+    "n_meds_changed": "# diabetes meds changed",
+    "a1c_tested": "A1C was tested",
+    "a1c_high": "A1C high (>7)",
+    "med_changed": "Meds changed during stay",
+    "on_diabetes_med": "On diabetes medication",
+    "discharge_group": "Discharged to",
+    "race": "Race",
+    "gender": "Gender",
+    "admission_type_id": "Admission type",
+    "insulin": "Insulin",
+    "metformin": "Metformin",
+}
+
+# Nicer values for one-hot categories that are codes rather than words
+ADMISSION_TYPE = {"1": "Emergency", "2": "Urgent", "3": "Elective",
+                  "4": "Newborn", "5": "Not available", "6": "Trauma",
+                  "7": "Trauma center", "8": "Not mapped"}
+
+
+def humanize_feature(feat: str) -> str:
+    """Turn e.g. 'cat__discharge_group_SNF / Rehab / LTC' into
+    'Discharged to: SNF / Rehab / LTC', and 'num__number_inpatient' into
+    'Prior inpatient visits'."""
+    f = feat.split("__", 1)[-1]           # drop the num__/cat__ prefix
+    if f in FEATURE_LABELS:               # numeric feature, exact match
+        return FEATURE_LABELS[f]
+    for base, label in FEATURE_LABELS.items():   # one-hot 'base_value'
+        if f.startswith(base + "_"):
+            val = f[len(base) + 1:]
+            if val == "infrequent_sklearn":
+                val = "(rare values)"
+            elif base == "admission_type_id":
+                val = ADMISSION_TYPE.get(val, val)
+            return f"{label}: {val}"
+    return f.replace("_", " ")
+
+
+HOVER_STYLE = dict(bgcolor="white", bordercolor="#d0dbe4",
+                   font=dict(color="#0b3d5c", size=13))
+
+
 @st.cache_resource(show_spinner="First load: building the dataset & model (~1 min)…")
 def ensure_pipeline():
     """On a fresh deploy the processed data/model aren't in the repo (gitignored).
@@ -165,11 +218,17 @@ with tab1:
     fig = px.bar(g, x="rate_pct", y=dim, orientation="h",
                  text=g["rate_pct"].round(1),
                  labels={"rate_pct": "30-day readmission rate (%)", dim: ""},
-                 color="rate_pct", color_continuous_scale="Reds")
-    fig.add_vline(x=base * 100, line_dash="dash", line_color="black",
+                 color="rate_pct", color_continuous_scale="Reds",
+                 custom_data=["n"])
+    fig.update_traces(
+        texttemplate="%{text}%", textposition="outside",
+        hovertemplate="<b>%{y}</b><br>Readmission rate: %{x:.1f}%"
+                      "<br>Encounters: %{customdata[0]:,}<extra></extra>")
+    fig.add_vline(x=base * 100, line_dash="dash", line_color="#333",
                   annotation_text=f"overall {base*100:.1f}%")
     fig.update_layout(height=430, coloraxis_showscale=False,
-                      margin=dict(l=10, r=10, t=30, b=10))
+                      margin=dict(l=10, r=10, t=30, b=10),
+                      hoverlabel=HOVER_STYLE)
     st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("**Highest-risk actionable segment**")
@@ -189,18 +248,26 @@ with tab2:
         st.info("Run `python src/model.py` to generate coefficients.")
     else:
         top = coefs.head(14).copy()
+        top["label"] = top["feature"].apply(humanize_feature)
         top["direction"] = top["coef"].apply(
             lambda c: "Raises risk" if c > 0 else "Lowers risk")
         top = top.sort_values("coef")
-        fig = px.bar(top, x="coef", y="feature", orientation="h",
+        fig = px.bar(top, x="coef", y="label", orientation="h",
                      color="direction",
                      color_discrete_map={"Raises risk": "#c0392b",
                                          "Lowers risk": "#2471a3"},
-                     labels={"coef": "Log-odds contribution", "feature": ""})
-        fig.update_layout(height=520, margin=dict(l=10, r=10, t=30, b=10))
+                     labels={"coef": "Effect on readmission risk (log-odds)",
+                             "label": ""},
+                     custom_data=["direction", "odds_ratio"])
+        fig.update_traces(
+            hovertemplate="<b>%{y}</b><br>%{customdata[0]}"
+                          "<br>Odds multiplier: ×%{customdata[1]:.2f}<extra></extra>")
+        fig.update_layout(height=560, margin=dict(l=10, r=10, t=30, b=10),
+                          legend_title_text="", hoverlabel=HOVER_STYLE)
         st.plotly_chart(fig, use_container_width=True)
-        st.caption("Logistic-regression coefficients. Positive = increases the "
-                   "odds of 30-day readmission, holding others fixed.")
+        st.caption("How each factor shifts a patient's 30-day readmission odds, "
+                   "holding everything else fixed — red raises risk, blue lowers it. "
+                   "Hover for the exact odds multiplier.")
 
 # ---------------- Tab 3: Risk Scorer ----------------
 with tab3:
