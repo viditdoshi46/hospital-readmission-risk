@@ -41,7 +41,9 @@ st.markdown("""
       background:#f5f9fc; border:1px solid #e1ebf2; border-radius:12px;
       padding:14px 16px;
   }
-  div[data-testid="stMetricValue"] {color:#0b3d5c; font-weight:700;}
+  div[data-testid="stMetricValue"] {color:#0b3d5c !important; font-weight:700;}
+  div[data-testid="stMetricLabel"], div[data-testid="stMetricLabel"] p {
+      color:#334155 !important; font-weight:600;}
   .stTabs [data-baseweb="tab-list"] {gap: 6px;}
   .stTabs [data-baseweb="tab"] {font-weight:600;}
 </style>
