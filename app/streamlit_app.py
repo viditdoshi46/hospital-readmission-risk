@@ -58,13 +58,14 @@ st.markdown("""
         animation: rise .6s both; transition: transform .25s, box-shadow .25s; overflow:hidden;}
   .kpi:hover {transform: translateY(-4px); box-shadow:0 18px 34px -18px rgba(10,53,80,.55);}
   .kpi::before {content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--c,#0e7c86);}
-  .kpi .ic {font-size:1.25rem; margin-bottom:2px;}
+  .kpi .ic {display:none;}
+  .kpi {min-height:150px;}
   .kpi .v {font-family:'DM Serif Display', serif; font-size:2.15rem; line-height:1.1; color:#0a3550;}
   .kpi .l {font-size:.78rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#5d7f8c; margin-top:4px;}
   .kpi .n {font-size:.8rem; color:#7c98a3; margin-top:4px;}
 
   /* story cards */
-  .story {background:#fff; border:1px solid #d9e6eb; border-radius:18px; padding:20px 22px; height:100%;
+  .story {background:#fff; border:1px solid #d9e6eb; border-radius:18px; padding:20px 22px; min-height:238px;
           box-shadow:0 10px 26px -20px rgba(10,53,80,.4);}
   .story .k {font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#0e7c86;}
   .story h4 {font-family:'DM Serif Display', serif; font-weight:400; font-size:1.25rem; margin:4px 0 8px; color:#0a3550;}
@@ -266,7 +267,7 @@ kpi(c4, "📈", "Top-decile lift", f"{metrics.get('top_decile_lift_vs_random','n
     "readmits caught vs random outreach", "#f2b24c", 240)
 
 st.write("")
-tab1, tab2, tab3 = st.tabs(["📊  Overview", "🔍  Risk Drivers", "🧮  Risk Scorer"])
+tab1, tab2, tab3 = st.tabs(["Overview", "Risk Drivers", "Risk Scorer"])
 
 # ---------------- Tab 1: Overview ----------------
 with tab1:
@@ -295,7 +296,7 @@ with tab1:
         hovertemplate="<b>%{y}</b><br>Readmission rate: %{x:.1f}%"
                       "<br>Encounters: %{customdata[0]:,}<extra></extra>")
     fig.add_vline(x=base * 100, line_dash="dash", line_color="#0a3550",
-                  annotation_text=f"overall {base*100:.1f}%",
+                  annotation_text=f"overall {base*100:.1f}%", annotation_position="bottom right",
                   annotation_font_color="#0a3550")
     fig.update_layout(height=max(380, 34 * len(g) + 120), coloraxis_showscale=False,
                       margin=dict(l=10, r=30, t=30, b=10), hoverlabel=HOVER_STYLE)
