@@ -1,3 +1,15 @@
+<p align="center"><img src="assets/banner.svg" alt="Hospital Readmission Risk" width="100%"></p>
+
+<p align="center">
+  <a href="https://hospital-readmission-risk-viditdoshi46.streamlit.app"><img src="https://img.shields.io/badge/Live%20app-open-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Live app"></a>
+  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/SQL-analysis-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="SQL">
+</p>
+
+<p align="center"><b><a href="https://hospital-readmission-risk-viditdoshi46.streamlit.app">Live app</a></b> &nbsp;·&nbsp; <a href="#">Back to top</a></p>
+
+---
+
 # Hospital 30-Day Readmission Risk Analysis
 
 **Business question:** Which patients are most likely to be readmitted within 30 days of discharge, *why*, and where should a hospital focus limited follow-up resources to reduce avoidable readmissions (and the CMS penalties tied to them)?

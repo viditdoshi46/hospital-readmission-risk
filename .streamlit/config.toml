@@ -1,0 +1,8 @@
+# Pinned light theme with a clinical teal palette so the app looks the same
+# for every visitor (and text is always readable).
+[theme]
+base = "light"
+primaryColor = "#0e7c86"
+backgroundColor = "#eef5f7"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#12313f"
